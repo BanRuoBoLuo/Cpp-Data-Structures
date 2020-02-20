@@ -75,95 +75,71 @@
 | Find Index   |          `O(1)` |
 | Find Object  |          `O(n)` |
 
-**Example Code**
+**Code Syntax**
 ```c++
 std::vector<int> v;
+std::vector<std::string> v1(10, "");
+std::vector<std::string> v2(10, "hello");
 
-//---------------------------------
-// General Operations
-//---------------------------------
+std::vector<int> v3 {0, 1, 2, 3, 4, 5}
+std::vector<int> v4(v3);
+std::vector<int> v5(v3.begin(), v3.end());
 
-// Insert head, index, tail
-v.insert(v.begin(), value);             // head
-v.insert(v.begin() + index, value);     // index
-v.push_back(value);                     // tail
-
-// Access head, index, tail
+// Element access 
 int head = v.front();       // head
 int value = v.at(index);    // index
 int tail = v.back();        // tail
 
 // Size
 unsigned int size = v.size();
+bool isEmpty = v.empty();
 
-// Iterate
+// Iterators
 for(std::vector<int>::iterator it = v.begin(); it != v.end(); it++) {
     std::cout << *it << std::endl;
 }
+
+// reverse traverse
+std::vector<int>::reverse_iterator rit = v.rbegin();
+for (; rit != v.rend(); ++rit) {
+    std::cout << ' ' << *rit;
+}
+
+// constant iterator
+std::vector<int>::const_iterator cit = v.cbegin();
+std::vector<int>::const_iterator cend = v.cend();
+
+// constant reverse iterator
+std::vector<int>::const_reverse_iterator crit = v.crbegin();
+std::vector<int>::const_reverse_iterator crend = v.crbeginend();
+
+// Insert head, index, tail
+v.insert(v.begin(), value);             // head
+v.insert(v.begin() + index, value);     // index
+v.emplace(v.begin()+ index, arguments)	// insert by constructor arguments
+
+v.push_back(value);                     // tail
+v1.emplace_back("Hello")				// add by constructor arguments
 
 // Remove head, index, tail
 v.erase(v.begin());             // head
 v.erase(v.begin() + index);     // index
 v.pop_back();                   // tail
 
+v.resize(10, 0);
+v1.swap(v2);
+
 // Clear
 v.clear();
 ```
 -------------------------------------------------------
-### 1.3 Deque `std::deque`
+### 1.3 Doubly-Linked List `std::list`
 **Use for**
-* Similar purpose of `std::vector`
-* Basically `std::vector` with efficient `push_front` and `pop_front`
-
-**Do not use for**
-* C-style contiguous storage (not guaranteed)
-
-**Notes**
-* Pronounced 'deck'
-* Stands for **D**ouble **E**nded **Que**ue
-
-**Example Code**
-```c++
-std::deque<int> d;
-
-//---------------------------------
-// General Operations
-//---------------------------------
-
-// Insert head, index, tail
-d.push_front(value);                    // head
-d.insert(d.begin() + index, value);     // index
-d.push_back(value);                     // tail
-
-// Access head, index, tail
-int head = d.front();       // head
-int value = d.at(index);    // index
-int tail = d.back();        // tail
-
-// Size
-unsigned int size = d.size();
-
-// Iterate
-for(std::deque<int>::iterator it = d.begin(); it != d.end(); it++) {
-    std::cout << *it << std::endl;
-}
-
-// Remove head, index, tail
-d.pop_front();                  // head
-d.erase(d.begin() + index);     // index
-d.pop_back();                   // tail
-
-// Clear
-d.clear();
-```
--------------------------------------------------------
-### 1.4 List `std::list` and `std::forward_list`
-**Use for**
-* Insertion into the middle/beginning of the list
+* Constant time insertion and removal of elements from anywhere 
 * Efficient sorting (pointer swap vs. copying)
 
 **Do not use for**
-* Direct access
+* Random access
 
 **Time Complexity**
 
@@ -182,27 +158,29 @@ d.clear();
 ```c++
 std::list<int> l;
 
-//---------------------------------
-// General Operations
-//---------------------------------
-
-// Insert head, index, tail
-l.push_front(value);                    // head
-l.insert(l.begin() + index, value);     // index
-l.push_back(value);                     // tail
+std::list<std::string> l1 {"the", "frogurt", "is", "also", "cursed"};
+std::list<std::string> l2(words1.begin(), words1.end());
+std::list<std::string> l3(words1);
+std::list<std::string> l4(5, "Mo");
 
 // Access head, index, tail
-int head = l.front();                                           // head
+int head = l.front();                                   // head
+int tail = l.back();                                    // tail
 int value = std::next(l.begin(), index);		        // index
-int tail = l.back();                                            // tail
 
 // Size
 unsigned int size = l.size();
+bool isEmpty = l.empty();
 
 // Iterate
 for(std::list<int>::iterator it = l.begin(); it != l.end(); it++) {
     std::cout << *it << std::endl;
 }
+
+// Insert head, index, tail
+l.push_front(value);                    // head
+l.insert(l.begin() + index, value);     // index
+l.push_back(value);                     // tail
 
 // Remove head, index, tail
 l.pop_front();                  // head
@@ -218,18 +196,106 @@ l.clear();
 
 // Splice: Transfer elements from list to list
 //	splice(iterator pos, list &x)
-//  	splice(iterator pos, list &x, iterator i)
-//  	splice(iterator pos, list &x, iterator first, iterator last)
+//  splice(iterator pos, list &x, iterator i)
+//  splice(iterator pos, list &x, iterator first, iterator last)
 l.splice(l.begin() + index, list2);
 
 // Remove: Remove an element by value
 l.remove(value);
+l.remove_if([](int n){ return n > 10; }); // remove all elements greater than 10
 
 // Unique: Remove duplicates
 l.unique();
 
 // Merge: Merge two sorted lists
 l.merge(list2);
+
+// Sort: Sort the list
+l.sort();
+
+// Reverse: Reverse the list order
+l.reverse();
+```
+-------------------------------------------------------
+### 1.4 Linked List `std::forward_list`
+**Use for**
+* Constant time insertion and removal of elements from anywhere 
+* Efficient sorting (pointer swap vs. copying)
+
+**Do not use for**
+* Random access
+
+**Time Complexity**
+
+| Operation    | Time Complexity |
+|--------------|-----------------|
+| Insert Head  |          `O(1)` |
+| Insert Index |          `O(n)` |
+| Insert Tail  |          `O(1)` |
+| Remove Head  |          `O(1)` |
+| Remove Index |          `O(n)` |
+| Remove Tail  |          `O(1)` |
+| Find Index   |          `O(n)` |
+| Find Object  |          `O(n)` |
+
+**Example Code**
+```c++
+std::list<int> l;
+
+std::list<std::string> l1 {"the", "frogurt", "is", "also", "cursed"};
+std::list<std::string> l2(words1.begin(), words1.end());
+std::list<std::string> l3(words1);
+std::list<std::string> l4(5, "Mo");
+
+// Access head, index, tail
+int head = l.front();                                   // head
+
+// Capacity
+bool isEmpty = l.empty();
+
+// Iterator
+// iterator begin() noexcept;
+// const_iterator cbegin() const noexcept;
+for(std::list<int>::iterator it = l.begin(); it != l.end(); it++) {
+    std::cout << *it << std::endl;
+}
+/
+// Returns an iterator pointing to the position before the first element in the container.
+// The iterator returned shall not be dereferenced: 
+// It is meant to be used as an argument for member functions emplace_after, insert_after, erase_after or splice_after, 
+// iterator before_begin() noexcept;
+// const_iterator cbefore_begin() const noexcept;
+forward_list<int>::iterator bit = l.before_begin();
+l.insert_after ( bit, 11 );
+
+// Insert head, index, tail
+l.push_front(value);                     // head
+
+l.insert_after(l.begin() + index, value);     // index
+l.insert_after(anotherIt, V.begin(), V.end());// insert a piece of V              
+l.insert_after(l.begin(), num, value);        // insert num vals 
+
+// Remove head, index, tail
+l.pop_front();                  		// head
+l.erase_after(l.begin() + index);		// index
+
+// Clear
+l.clear();
+
+//---------------------------------
+// Container-Specific Operations
+//---------------------------------
+l.splice_after(l.begin() + index, list2);
+
+// Remove: Remove an element by value
+l.remove(value);
+l.remove_if([](int n){ return n > 10; }); // remove all elements greater than 10
+
+// Merge: Merge two sorted lists
+l.merge(list2);
+
+// Unique: Remove duplicates
+l.unique();
 
 // Sort: Sort the list
 l.sort();
@@ -437,9 +503,77 @@ unsigned int size = q.size();
 q.pop();
 ```
 -------------------------------------------------------
-### 1.9 Priority Queue `std::priority_queue`
+### 1.9 Deque `std::deque`
+**Use for**
+* Similar purpose of `std::vector`, an indexed sequence container
+* Basically `std::vector` with efficient `push_front` and `pop_front`
+
+**Do not use for**
+* C-style contiguous storage (not guaranteed)
+
+**Notes**
+* Elements are not stored contiguously, instead a sequence of individual fixed-size arrays
+* Pronounced 'deck'
+* Stands for **D**ouble **E**nded **Que**ue
+
+**Time Complexity**
+
+| Operation    | Time Complexity |
+|--------------|-----------------|
+| Insert Head  |          `O(1)` |
+| Insert Tail  |          `O(1)` |
+| Remove Head  |          `O(1)` |
+| Remove Tail  |          `O(1)` |
+| Insert Index |          `O(n)` |
+| Remove Index |          `O(n)` |
+| Find Index   |          `O(n)` |
+| Find Object  |          `O(n)` |
+| Index access |		  `O(1)` |
+
+**Example Code**
+```c++
+std::deque<int> d;
+
+std::deque<std::string> words1 {"the", "frogurt", "is", "also", "cursed"};
+std::deque<std::string> words2(words1.begin(), words1.end());
+std::deque<std::string> words3(words1);
+
+std::deque<std::string> words4(5);
+std::deque<std::string> words5(5, "Mo");
+
+// Insert head, index, tail
+d.push_front(value);                    // head
+d.insert(d.begin() + index, value);     // index
+d.push_back(value);                     // tail
+
+// Access head, index, tail
+int head = d.front();       // head
+int value = d.at(index);    // index
+int tail = d.back();        // tail
+
+// Size
+unsigned int size = d.size();
+
+// Iterate
+for(std::deque<int>::iterator it = d.begin(); it != d.end(); it++) {
+    std::cout << *it << std::endl;
+}
+
+// Remove head, index, tail
+d.pop_front();                  // head
+d.erase(d.begin() + index);     // index
+d.pop_back();                   // tail
+
+// Clear
+d.clear();
+```
+-------------------------------------------------------
+### 1.10 Priority Queue `std::priority_queue`
 **Use for**
 * First-In First-Out operations where **priority** overrides arrival time
+* A heap is essentially an instance of a priority queue
+* A **min** heap is structured with the root node as the smallest and each child subsequently larger than its parent
+* A **max** heap is structured with the root node as the largest and each child subsequently smaller than its parent
 * Ex: CPU scheduling (smallest job first, system/user priority)
 * Ex: Medical emergencies (gunshot wound vs. broken arm)
 
@@ -448,14 +582,20 @@ q.pop();
 
 **Example Code**
 ```c++
-std::priority_queue<int> p;
+std::priority_queue<int> p; // max heap, default to std::less<T>
+std::priority_queue<int, std::vector<int>, std::greater<int> > q2; // min heap
 
-//---------------------------------
-// General Operations
-//---------------------------------
+// Using lambda to compare elements.
+auto cmp = [](int left, int right) { return (left ^ 1) < (right ^ 1); };
+std::priority_queue<int, std::vector<int>, decltype(cmp)> q3(cmp);
+
+std::priority_queue<int> c2(c1);
+std::vector<int> vec{3, 1, 4, 1, 5};
+std::priority_queue<int> c3(std::less<int>(), vec);
 
 // Insert
 p.push(value);
+p.emplace(arguments); // push by class constructor arguments
 
 // Access
 int top = p.top();  // 'Top' element
@@ -466,15 +606,6 @@ unsigned int size = p.size();
 // Remove
 p.pop();
 ```
--------------------------------------------------------
-### 1.10 Heap `std::priority_queue`
-**Notes**
-* A heap is essentially an instance of a priority queue
-* A **min** heap is structured with the root node as the smallest and each child subsequently larger than its parent
-* A **max** heap is structured with the root node as the largest and each child subsequently smaller than its parent
-* A min heap could be used for *Smallest Job First* CPU Scheduling
-* A max heap could be used for *Priority* CPU Scheduling
-
 **Max Heap Example (using a binary tree)**
 
 ![MaxHeap](General/MaxHeap.png)
